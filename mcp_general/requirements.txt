@@ -1,0 +1,7 @@
+fastmcp>=4.2.4,<5
+python-dotenv
+pymupdf
+tavily-python
+httpx
+beautifulsoup4
+windows-mcp @ git+https://github.com/CursorTouch/Windows-MCP.git@a6ae7e1cf5998b69bd06e9d9a363f20a5f97fa93
