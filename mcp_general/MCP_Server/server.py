@@ -3,6 +3,7 @@ import os
 
 from dotenv import load_dotenv
 from fastmcp import FastMCP
+from fastmcp.experimental.transforms.code_mode import CodeMode
 
 load_dotenv(Path(__file__).resolve().parent.parent / ".env", encoding="utf-8-sig")
 
@@ -23,7 +24,7 @@ from tools.search_text import search_text
 from tools.web_search import web_search
 from tools.write_file import write_file
 
-mcp = FastMCP("General MCP")
+mcp = FastMCP("General MCP", transforms=[CodeMode()])
 
 for tool in (
     web_search, read_pdf, list_files, read_file, write_file,

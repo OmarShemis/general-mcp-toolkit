@@ -2,6 +2,8 @@
 
 A Python MCP server with 27 tools for workspace files, PDF extraction, web
 search, webpage reading, command execution, and Windows desktop automation.
+FastMCP Code Mode exposes these capabilities through on-demand discovery and
+sandboxed Python orchestration rather than loading every tool schema upfront.
 
 ## Requirements
 
@@ -41,6 +43,41 @@ From `mcp_general`:
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
+
+## Code Mode
+
+Code Mode is enabled by default using FastMCP's experimental `CodeMode`
+transform. `requirements.txt` includes the `fastmcp[code-mode]` extra, which
+installs the Monty sandbox runtime. Reinstall requirements and restart the
+server after upgrading an existing installation.
+
+Clients see three meta-tools instead of the original tool catalog:
+
+1. `search` discovers tools by keyword.
+2. `get_schema` provides the selected tools' parameters and return shapes.
+3. `execute` runs Python that composes calls to the discovered tools.
+
+For example, search for `read_file`, inspect its schema, then pass this code
+to `execute` to read two workspace files and return only their lengths:
+
+```python
+first = await call_tool("read_file", {"file_path": "first.txt"})
+second = await call_tool("read_file", {"file_path": "second.txt"})
+return {"first_chars": len(first["result"]), "second_chars": len(second["result"])}
+```
+
+Create these sample files inside `MCP_WORKSPACE` first. `read_file` returns its
+text in the structured `result` field; `get_schema` describes this shape.
+Tool results remain
+inside the code block until returned. Mounted desktop tools are discoverable
+through the same layer; inspect their actual names and schemas before calling.
+The transform uses its default limit of 50 tool calls per execution.
+
+The Python orchestration runs in a sandbox, but the underlying tools retain
+their original server permissions: `run_command` can execute programs and
+desktop tools can operate the computer. Code Mode is not an authorization
+boundary or a replacement for authentication and trusted-client access.
+See the [FastMCP Code Mode documentation](https://gofastmcp.com/docs/servers/transforms/code-mode).
 
 ## Behavior and limitations
 

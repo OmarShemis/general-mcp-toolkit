@@ -1,4 +1,4 @@
-fastmcp>=4.2.4,<5
+fastmcp[code-mode]>=4.2.4,<5
 python-dotenv
 pymupdf
 tavily-python
